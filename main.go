@@ -4,19 +4,27 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/laodao-ai/sdd-tdd-loop-demo/sensor"
 )
 
 func main() {
-	scanner := bufio.NewScanner(os.Stdin)
+	run(os.Stdin, os.Stdout, os.Stderr)
+}
+
+func run(in io.Reader, out, errOut io.Writer) {
+	scanner := bufio.NewScanner(in)
 	for scanner.Scan() {
 		celsius, err := sensor.ParseCelsius(scanner.Text())
 		if err != nil {
-			fmt.Fprintln(os.Stderr, err)
+			fmt.Fprintln(errOut, err)
 			continue
 		}
-		fmt.Printf("%.1f°C\n", celsius)
+		fmt.Fprintf(out, "%.1f°C\n", celsius)
+		if sensor.IsOverTemp(celsius) {
+			fmt.Fprintf(errOut, "ALERT: %.1f°C > %.1f°C\n", celsius, sensor.MaxCelsius)
+		}
 	}
 }
