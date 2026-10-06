@@ -33,3 +33,26 @@ func TestParseCelsius(t *testing.T) {
 		})
 	}
 }
+
+func TestIsOverTemp(t *testing.T) {
+	tests := []struct {
+		name    string
+		celsius float64
+		want    bool
+	}{
+		{name: "well above limit", celsius: 81.2, want: true},
+		{name: "above limit", celsius: 80.1, want: true},
+		{name: "at limit", celsius: 80.0, want: false},
+		{name: "below limit", celsius: 23.5, want: false},
+		{name: "negative below limit", celsius: -4.0, want: false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := IsOverTemp(tt.celsius)
+			if got != tt.want {
+				t.Fatalf("IsOverTemp(%v) = %v, want %v", tt.celsius, got, tt.want)
+			}
+		})
+	}
+}
