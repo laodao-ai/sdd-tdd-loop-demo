@@ -1,0 +1,4 @@
+# 本机文件，不进仓
+.env
+.env.*
+.claude/settings.local.json
